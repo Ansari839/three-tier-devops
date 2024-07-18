@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    # deploy:
+    #   replicas: 1
+
+  backend:
+    build: ./backend
+    image: backend:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - URL=mongodb://mongodb/mern
+    depends_on:
+      - mongodb
+    volumes:
+      - backend-data:/usr/src/app/data
+    # deploy:
+    #   replicas: 1
+
+  frontend:
+    build: ./frontend
+    image: frontend:latest
+    ports:
+      - "5173:5173"
+    volumes:
+      - frontend-data:/usr/src/app/data
+    # deploy:
+    #   replicas: 1
+
+volumes:
+  mongo-data:
+  backend-data:
+  frontend-data:
